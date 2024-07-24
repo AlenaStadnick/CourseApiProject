@@ -83,9 +83,14 @@ public class ChecklistTests {
 
         Assert.assertEquals(statusCode, 200);
 
-        // Перевірка оновленої назви чекліста
-        Assert.assertTrue(responseBody.contains("\"name\":\"Updated Checklist New Test\""));
-        Assert.assertTrue(responseBody.contains("\"position\":1"));
+        // Використання JSON парсеру для перевірки оновленої назви чекліста
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String updatedName = jsonNode.path("checklist").path("name").asText();
+        int position = jsonNode.path("checklist").path("orderindex").asInt();
+
+        Assert.assertEquals(updatedName, "Updated Checklist New Test");
+        Assert.assertEquals(position, 2);
 
         client.close();
     }
