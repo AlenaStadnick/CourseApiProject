@@ -2,34 +2,23 @@ version: 2.1
 
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:11-jdk
+    machine: true
     steps:
       - checkout
-
       - run:
           name: Install Maven
-          command: sudo apt-get install maven
-
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y maven
       - run:
           name: Build with Maven
           command: mvn clean install
-
       - run:
           name: Run Tests
           command: mvn test
-
       - run:
           name: Generate Allure Report
           command: mvn allure:report
-
-      - store_artifacts:
-          path: target/allure-results
-          destination: allure-results
-
-      - store_artifacts:
-          path: target/allure-report
-          destination: allure-report
 
 workflows:
   version: 2
